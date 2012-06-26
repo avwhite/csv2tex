@@ -1,0 +1,12 @@
+Name:                csv2tex
+Version:             0.0
+Description:         Convert CSV to tex style tables
+License:             MIT
+Author:              Andreas Vinter-Hviid
+Maintainer:          andreas.vinterhviid@gmail.com
+Build-Type:          Simple
+cabal-version:       >= 1.4
+
+Executable csv2tex
+  Main-is:           csv2tex.hs
+  Build-Depends:     parsec, base < 5
