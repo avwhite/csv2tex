@@ -1,6 +1,6 @@
 module Main where	
 
-import Text.ParserCombinators.Parsec 
+import Text.Parsec 
 import Control.Monad
 import System.Environment
 
