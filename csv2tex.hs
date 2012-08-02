@@ -17,16 +17,24 @@ myDec x
 	| x > 0 = x-1
 	| otherwise = x
 
---Parser
+repSepBy1 n p sep = do
+	x <- p
+	xs <- replicateM (n-1) (sep >> p)
+	return (x:xs)
+	
 
-csvParser = sepEndBy row (char '\n')
-row = sepBy cell (char ',')
-cell = qcell <|> many (escChar <|> noneOf ",\n")
-qcell = do
-	char '"'
-	res <- many (escChar <|> noneOf "\"")
-	char '"'
-	return res
+--New Parser
+
+csvParser = do
+	head <- header
+	newline
+	tail <- sepEndBy (row $ length head) newline
+	return (head:tail)
+header = sepBy1 cell (char ',')
+row n = repSepBy1 n cell (char ',')
+cell = qcell <|> ncell
+ncell = many (escChar <|> noneOf ",\n")
+qcell = between (char '"') (char '"') (many $ escChar <|> noneOf "\"") 
 escChar = char '\\' >> anyChar
 
 --Parse function
