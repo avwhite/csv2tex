@@ -17,13 +17,15 @@ myDec x
 	| x > 0 = x-1
 	| otherwise = x
 
+repSepBy1 :: Stream s m t => Int -> ParsecT s u m a -> ParsecT s u m sep -> ParsecT s u m [a]
 repSepBy1 n p sep = do
 	x <- p
 	xs <- replicateM (n-1) (sep >> p)
 	return (x:xs)
-	
 
---New Parser
+repSepBy n p sep = repSepBy1 n p sep <|> return []
+
+--Parser
 
 csvParser = do
 	head <- header
@@ -31,18 +33,18 @@ csvParser = do
 	tail <- sepEndBy (row $ length head) newline
 	return (head:tail)
 header = sepBy1 cell (char ',')
-row n = repSepBy1 n cell (char ',')
+row n = repSepBy n cell (char ',')
 cell = qcell <|> ncell
 ncell = many (escChar <|> noneOf ",\n")
 qcell = between (char '"') (char '"') (many $ escChar <|> noneOf "\"") 
 escChar = char '\\' >> anyChar
 
---Parse function
+--The function that takes a csv string and returns an IO action
 
 texFmt :: String -> IO ()
 texFmt inp = case (parse csvParser "" inp) of
 	Left err -> putStrLn "Parse error at " >> print err
-	Right x -> putStrLn $ fmtCsv x
+	Right x -> putStr $ fmtCsv x
 
 --Formatting
 
@@ -64,4 +66,4 @@ fmtCsv csv = concat $ fmap (fmtLine (colSizes csv)) csv
 
 --Main
 
-main = (liftM head) getArgs  >>= readFile >>= texFmt
+main = (liftM head) getArgs >>= readFile >>= texFmt
