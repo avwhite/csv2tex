@@ -1,11 +1,19 @@
-#Usage
+#csv2tex
 
-csv2ted filename
+csv2tex is a program that translates a `.csv` file into a (La)TeX style table, where cells are separated by a `$` and rows ended by a `\\`.
 
-where filename is the name of the CSV file. csv2tex then outputs the resulting tex-style table to stdout.
+The resulting cells are padded with whitespace, so the columns are straight.
 
-#Issues
+##Usage
 
- *For some reason an extra \\ is printed on a line after everyrhing.
+```
+	csv2tex csvfile
 
-Generally the program is not at all done yet.
+```
+
+The output is written to `stdout`.
+
+##Shortcomings/TODO
+
+ - No effort have been put into error messages, but since I'm using parsec, the parser might spit out something sensible.
+ - When parsing files with only one column, an empty line will be interpreted as an empty cell. This means that if there is any succeeding whitespace (which some text editors, like Vim adds), it too will be interpreted as an empty cell.
