@@ -8,7 +8,6 @@ The resulting cells are padded with whitespace, so the columns are straight.
 
 ```
 	csv2tex csvfile
-
 ```
 
 The output is written to `stdout`.
